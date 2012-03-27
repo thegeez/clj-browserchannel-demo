@@ -161,7 +161,6 @@
   (write [this data])
   (write-raw [this data])
   (write-end [this])
-  (write-error [this status-code message])
   (send-error [this status-code message]))
 
 ;; for writing on backchannel to non-IE clients
@@ -180,12 +179,6 @@
                        :data data}))
   (write-end [this]
              (respond {:type :close}))
-  (write-error [this status-code message]
-               (respond {:type :head
-                         :status status-code
-                         :headers headers})
-               (respond {:type :chunk :data message})
-               (write-end this))
   (send-error [this status-code message]
               (respond {:type :error
                         :status-code status-code
@@ -229,10 +222,6 @@
              (respond {:type :chunk
                        :data "<script>try  {parent.d(); }catch (e){}</script>\n"})
              (respond {:type :close}))
-  (write-error [this status-code message]
-               (write-head this)
-               (respond {:type :chunk
-                         :data (str "<script>try {parent.rpcClose(" (pr-str message) ")} catch(e){}</script>\n")}))
   (send-error [this status-code message]
               (respond {:type :error
                         :status-code status-code
@@ -604,7 +593,7 @@
       (fn [respond]
         (write-head respond)
         (send-off session-agent set-back-channel respond req))}
-     (= type :terminate)
+     (= type "terminate")
      ;; this is a request made in an img tag
      (do ;;end session
        (when session-agent
