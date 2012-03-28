@@ -28,6 +28,7 @@ dependencies other than the Google Closure [library][2].
 [2]: https://developers.google.com/closure/library/
 
 The example runs in at least:
+
 * Chrome
 * Firefox
 * Internet Explorer 5.5+ (!!)
@@ -53,7 +54,6 @@ development.
 
 * Websockets - Websockets solve the same problems as BrowserChannel,
   however BrowserChannel works on almost all existing clients.
-
 * socket.io - [socket.io][5] provides a similar api as BrowserChannel on
 top of many transport protocols, including websockets. BrowserChannel
 only has two transport protocols: XHR and forever frames (for IE) in
