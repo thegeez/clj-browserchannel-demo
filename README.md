@@ -73,6 +73,8 @@ or [http://localhost:8080/index-dev.html][http://localhost:8080/index-dev.html]
 Use this [buildpack][6], which runs the two lein run tasks to compile
 the ClojureScript during deployment.
 
+[6]: https://github.com/thegeez/heroku-buildpack-clojure
+
 ### Note on disconnections on Heroku
 I have found that Heroku does not immediately report when a connection to a client
 is broken. If the client is able to reconnect this is not a problem,
