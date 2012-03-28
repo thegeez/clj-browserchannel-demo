@@ -12,7 +12,7 @@
 ;; @todo SSL in jetty-async-adapter
 ;; @todo session-timeout should deduct waiting time for the failed
 ;; sent heartbeat?
-;; @todo always close connections after 4 mins or so?
+
 
 (def default-options
   {;; a.example, b.example => ["a","b"]
@@ -70,6 +70,7 @@
 (assert (= (repeat 4 "/foo")
            (map standard-base ["foo" "/foo" "foo/" "/foo"])))
 
+;; type preserving drop upto for queueus
 (defn drop-queue [queue id]
   (let [head (peek queue)]
     (if-not head
@@ -136,6 +137,7 @@
 
 ;;;; listeners
 ;; @todo clean this up, perhaps store listeners in the session?
+;; @todo replace with lamina?
 ;; sessionId -> :event -> [call back]
 ;; event: :map | :close
 (def listeners-agent (agent {}))
@@ -313,8 +315,6 @@
   ISession
   (clear-back-channel [this]
                       (try
-                        ;; when the connection has died, write-end
-                        ;; throws and exception
                         (when back-channel
                           (write-end (:respond back-channel)))
                         (catch Exception e
@@ -391,7 +391,7 @@
                   this ;; nothing to do when there's no connection
                   (if-let [buffer (seq array-buffer)]
                     (try
-                      ;; write throw exception when the connection is closed
+                      ;; write throws exception when the connection is closed
                       (write (:respond back-channel) buffer)
                       ;; size is an approximation
                       (let [this (let [size (reduce + 0 (map count (map json/json-str buffer)))]
@@ -501,8 +501,6 @@
       (if (:async res)
         (let [reactor (:reactor res)
               type (get-in req [:query-params "TYPE"])]
-          ;; wrap the reactor in the proper writer, which will mostly
-          ;; wrap responses in html and set proper headers
           (assoc res :reactor
                  (fn [respond]
                    (reactor (let [headers (assoc (:headers options)
@@ -513,7 +511,7 @@
                                   ;; sent flags
                                   (IEWriter. respond headers domain false false))
                                 (XHRWriter. respond headers)))))))
-        res ;; do not touch responses with out :async
+        res ;; do not touch responses without :async
         ))))
 
 ;; test channel is used to determine which host to connect to
@@ -630,7 +628,6 @@
 (defn wrap-browserchannel [handler & [options]]
   (let [options (merge default-options options)
         base (str (:base options))]
-
     (-> (fn [req]
           (let [uri (:uri req)
                 method (:request-method req)]

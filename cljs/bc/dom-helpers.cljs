@@ -139,11 +139,3 @@
   (classes/add el classname))
 (defn remove-class [el classname]
   (classes/remove el classname))
-
-(defn schedule [steps]
-  (when (seq steps)
-    (let [step (first steps)]
-      (if (number? step)
-        (set-timeout #(schedule (rest steps)) step)
-        (do (step)
-            (schedule (rest steps)))))))

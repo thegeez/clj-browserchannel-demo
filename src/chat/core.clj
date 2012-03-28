@@ -45,18 +45,11 @@
                                             8080)) :join? false}))
 
 (comment
-  (def async-server (jetty/run-jetty-async #'dev-app {:port 8080 :join? false}))
+  (def async-server (-main))
   (.stop async-server)
   (do
     (.stop async-server)
-    (def async-server (jetty/run-jetty-async #'dev-app {:port 8080 :join? false}))
+    (def async-server (-main))
     )
-  (agent-error (second (first @browserchannel/sessions)))
-  (agent-error (second (second @browserchannel/sessions)))
-  (send-off (second (first @browserchannel/sessions))
-            #(-> %
-                 (browserchannel/queue-array {"msg" "HELLO WOLD"})
-                 browserchannel/flush-buffer))
-  (count @browserchannel/sessions)
   )
 

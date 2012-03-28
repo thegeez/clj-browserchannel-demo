@@ -10,11 +10,8 @@
 
 ;; Based on ring-jetty-async-adapter by Mark McGranaghan
 ;; (https://github.com/mmcgrana/ring/tree/jetty-async)
-;; This uses Continuation instead of AsyncContext
-;; has different time-out handling
-;;
-;; This is based on the Suspend/Resume usage
-;; http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/continuation/Continuation.html
+;; This has failed write support
+
 
 (defn- proxy-handler
   "Returns an Jetty Handler implementation for the given Ring handler."
@@ -32,9 +29,6 @@
           (let [reactor (:reactor response-map)
                 ;; continuation lives until written to!
                 continuation (.startAsync request)
-                _ (do (println "is expired?" (.isExpired continuation))
-                      (when (.isExpired continuation)
-                          (throw (Exception. "continuation is expired!"))))
                 emit (fn [args]
                        (let [type (:type args)
                              servlet-response (.getServletResponse continuation)]
@@ -44,32 +38,17 @@
                                  (servlet/set-status (:status args))
                                  (servlet/set-headers (assoc (:headers args)
                                                         "Transfer-Encoding" "chunked"))
-                                 (.flushBuffer)
-                                 ;; (-> .getOutputStream .flush)
-                                 )
+                                 (.flushBuffer))
                                :chunk
                                ;; flush will throw EofException if
                                ;; the connection is closed
-                               ;; resume raises IllegalStateException
                                (try
-                                 ;;(.resume continuation)
-                                 (println "chunck " (:data args
-                                                           ))
-
                                  (doto (.getWriter response)
                                    (.write (:data args))
                                    (.flush))
-                                 (println "CheckError" (.checkError (.getWriter response)))
                                  (when (.checkError (.getWriter response))
-                                   (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION")))
-                                 
-                                 #_(doto (.getOutputStream servlet-response)
-                                     (.print (:data args))
-                                     .flush
-                                     
-                                     )
+                                   (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION")))                                 
                                  (catch Exception e
-                                   (println "Exception was " e)
                                    (throw e)))
                                :error
                                (.sendError servlet-response (:status-code args) (:message args))
@@ -77,10 +56,8 @@
                                (.complete continuation))))]
             (.addContinuationListener continuation
                                       (proxy [ContinuationListener] []
-                                        (onComplete [c]
-                                                    (println "on complete"))
+                                        (onComplete [c] nil)
                                         (onTimeout [c]
-                                                   (println "on timeout")
                                                    (.complete c))))
 
             ;; 4 minutes is google default
@@ -106,7 +83,7 @@
     :port
     :host
     :join?          - Block the caller: defaults to true.
-    :response-timeout"
+    :response-timeout - Timeout after which the server will close the connection"
   [handler options]
   (let [^Server s (create-server (dissoc options :configurator))]
     (when-let [configurator (:configurator options)]
