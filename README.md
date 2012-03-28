@@ -62,12 +62,14 @@ streaming and non-streaming mode.
 [5]: http://socket.io
 
 ## Run 
-    lein run -m tasks.build-dev-js ;; compile cljs
-    lein run -m tasks.build-advanced-js ;; compile cljs in advanced mode
+    ;; compile cljs
+    lein run -m tasks.build-dev-js
+    ;; compile cljs in advanced mode
+    lein run -m tasks.build-advanced-js
     lein run -m chat.core
 
-Open the app on [http://localhost:8080/index.html][http://localhost:8080/index.html] (Advanced compiled)
-or [http://localhost:8080/index-dev.html][http://localhost:8080/index-dev.html]
+Open two windows at [http://localhost:8080/index.html](http://localhost:8080/index.html) (Advanced compiled)
+or [http://localhost:8080/index-dev.html](http://localhost:8080/index-dev.html) and start chatting!
 
 ## Run on Heroku
 Use this [buildpack][6], which runs the two lein run tasks to compile
@@ -84,7 +86,7 @@ must timeout the session. Ussually this happens when trying to send the next
 heartbeat to the client. On Heruko this does not report an error, even
 though there is no connection to the client. So instead of the
 connection timeing out on a heartbeat (after seconds/a minute) the
-connection will only timeout after the connection is timeout by the
+connection will only timeout after the connection is timed out by the
 server (4 minutes by default). The Netty implementation has the same
 problem on Heroku. Deployments on Amazon Web Services do not have this
 problem. 
@@ -107,17 +109,27 @@ and .setChannelDebug lines in cljs/bc/core.cljs to enable the logging window.
 ## Other BrowserChannel implementations
 Many thanks to these authors, their work is the only open-source
 documentation on the BrowserChannel protocol.
-* [libevent-browserchannel-server][http://code.google.com/p/libevent-browserchannel-server]
-in C++ by Andy Hochhaus - Has the most extensive [documentation][http://code.google.com/p/libevent-browserchannel-server/wiki/BrowserChannelProtocol] on the BrowserChannel protocol
-* [browserchannel][https://github.com/dturnbull/browserchannel] in Ruby by David Turnbull
-* [node-browserchannel][https://github.com/josephg/node-browserchannel]
+
+* [libevent-browserchannel-server][libevent]
+in C++ by Andy Hochhaus - Has the most extensive [documentation][libevent-doc] on the BrowserChannel protocol
+* [browserchannel][ruby] in Ruby by David Turnbull
+* [node-browserchannel][node]
 in Node.js/Javascript by Joseph Gentle
+
+[libevent]: http://code.google.com/p/libevent-browserchannel-server
+[libevent-doc]: http://code.google.com/p/libevent-browserchannel-server/wiki/BrowserChannelProtocol
+[ruby]: https://github.com/dturnbull/browserchannel
+[node]: https://github.com/josephg/node-browserchannel
 
 ## About
 
 Written by:
-Gijs Stuurman / [@thegeez][http://twitter.com/thegeez] / [Blog][http://thegeez.github.com] / [Github][https://github.com/thegeez]
+Gijs Stuurman / [@thegeez][twt] / [Blog][blog] / [GitHub][github]
 
-License
+[twt]: http://twitter.com/thegeez
+[blog]: http://thegeez.github.com
+[github]: https://github.com/thegeez
+
+### License
 
 Copyright (c) 2012 Gijs Stuurman and released under an MIT license.
