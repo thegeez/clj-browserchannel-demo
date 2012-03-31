@@ -100,6 +100,7 @@ BrowserChannel has a helpful debug window. Uncomment the debug-window
 and .setChannelDebug lines in cljs/bc/core.cljs to enable the logging window.
 
 ## Todo
+- Release backend as library
 - Handling acknowledgements by client and callbacks on queued arrays
 - Host prefixes
 - Heroku disconnection
