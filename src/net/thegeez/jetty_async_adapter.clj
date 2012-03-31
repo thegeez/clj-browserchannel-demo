@@ -26,16 +26,9 @@
             (servlet/update-servlet-response response response-map)
             (.setHandled base-request true))
           :http
-          (let [_ (do
-                    (.setBufferSize response 1024)
-                    (println "Response ser buffer size"))
-                _ (println "REsponse buffer size:" (.getBufferSize response))
-                reactor (:reactor response-map)
+          (let [reactor (:reactor response-map)
                 ;; continuation lives until written to!
                 continuation (.startAsync request)
-                _ (do
-                    (.setBufferSize (.getServletResponse continuation) 1024)
-                    (println "SR buffersize " (.getBufferSize (.getServletResponse continuation))))
                 emit (fn [args]
                        (let [type (:type args)
                              servlet-response (.getServletResponse continuation)]
@@ -45,8 +38,7 @@
                                  (servlet/set-status (:status args))
                                  (servlet/set-headers (assoc (:headers args)
                                                         "Transfer-Encoding" "chunked"))
-                                 (.flushBuffer)
-                                 )
+                                 (.flushBuffer))
                                :chunk
                                (do
                                  (doto (.getWriter response)

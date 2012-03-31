@@ -49,21 +49,11 @@
                     (.setEnabled true)
                     (.init ())))
 
-;; this makes the second stage /channel/test continue after
-;; receiving 11111 instead of waiting the whole 2 seconds
-;; this feature is the default from at least GClosure rev 1698
-;; cljs currently includes rev 790
-;; this does not work with advanced compilation
-;; Wait for CLJS-88 or use more recent GClosure lib (ie wait for CLJS-35)
-(set! goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION true)
-
 (defn ^:export run []
   (events/listen js/window "unload" #(.disconnect channel ()))
   (doto channel
     (.setChannelDebug (goog.net.ChannelDebug.))
     (.setHandler (handler))
     ;;(.setAllowChunkedMode false)
-    (.connect "/channel/test" "/channel/bind") ;;
-    )
-  
-  )
+    (.connect "/channel/test" "/channel/bind")
+    ))
