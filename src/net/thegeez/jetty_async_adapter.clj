@@ -40,16 +40,11 @@
                                                         "Transfer-Encoding" "chunked"))
                                  (.flushBuffer))
                                :chunk
-                               ;; flush will throw EofException if
-                               ;; the connection is closed
-                               (try
-                                 (doto (.getWriter response)
-                                   (.write (:data args))
-                                   (.flush))
-                                 (when (.checkError (.getWriter response))
-                                   (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION")))                                 
-                                 (catch Exception e
-                                   (throw e)))
+                               (doto (.getWriter response)
+                                 (.write (:data args))
+                                 (.flush))
+                               (when (.checkError (.getWriter response))
+                                 (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION")))                                                   
                                :error
                                (.sendError servlet-response (:status-code args) (:message args))
                                :close
