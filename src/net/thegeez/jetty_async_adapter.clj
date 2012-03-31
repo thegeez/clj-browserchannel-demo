@@ -26,9 +26,15 @@
             (servlet/update-servlet-response response response-map)
             (.setHandled base-request true))
           :http
-          (let [reactor (:reactor response-map)
+          (let [_ (do
+                    (.setBufferSize response 1024)
+                    (println "Response ser buffer size"))
+                _ (println "REsponse buffer size:" (.getBufferSize response))
+                reactor (:reactor response-map)
                 ;; continuation lives until written to!
                 continuation (.startAsync request)
+                _ (do
+                    (println "SR buffersize " (.getBufferSize (.getServletResponse continuation))))
                 emit (fn [args]
                        (let [type (:type args)
                              servlet-response (.getServletResponse continuation)]
@@ -40,11 +46,12 @@
                                                         "Transfer-Encoding" "chunked"))
                                  (.flushBuffer))
                                :chunk
-                               (doto (.getWriter response)
-                                 (.write (:data args))
-                                 (.flush))
-                               (when (.checkError (.getWriter response))
-                                 (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION")))                                                   
+                               (do
+                                 (doto (.getWriter response)
+                                   (.write (:data args))
+                                   (.flush))
+                                 (when (.checkError (.getWriter response))
+                                   (throw (Exception. "CANNOT WRITE TO STREAMING CONNECTION"))))                               
                                :error
                                (.sendError servlet-response (:status-code args) (:message args))
                                :close

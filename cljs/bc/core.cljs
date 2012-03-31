@@ -45,14 +45,14 @@
 
 (def channel (goog.net.BrowserChannel.))
 
-;;(def debug-window (doto (goog.debug.FancyWindow. "main")
-;;                    (.setEnabled true)
-;;                    (.init ())))
+(def debug-window (doto (goog.debug.FancyWindow. "main")
+                    (.setEnabled true)
+                    (.init ())))
 
 (defn ^:export run []
   (events/listen js/window "unload" #(.disconnect channel ()))
   (doto channel
-    ;;(.setChannelDebug (goog.net.ChannelDebug.))
+    (.setChannelDebug (goog.net.ChannelDebug.))
     (.setHandler (handler))
     ;;(.setAllowChunkedMode false)
     (.connect "/channel/test" "/channel/bind") ;;
