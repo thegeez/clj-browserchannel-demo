@@ -34,6 +34,7 @@
                 ;; continuation lives until written to!
                 continuation (.startAsync request)
                 _ (do
+                    (.setBufferSize (.getServletResponse continuation) 1024)
                     (println "SR buffersize " (.getBufferSize (.getServletResponse continuation))))
                 emit (fn [args]
                        (let [type (:type args)
@@ -44,7 +45,8 @@
                                  (servlet/set-status (:status args))
                                  (servlet/set-headers (assoc (:headers args)
                                                         "Transfer-Encoding" "chunked"))
-                                 (.flushBuffer))
+                                 (.flushBuffer)
+                                 )
                                :chunk
                                (do
                                  (doto (.getWriter response)
