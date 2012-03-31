@@ -51,6 +51,11 @@
 
 (defn ^:export run []
   (events/listen js/window "unload" #(.disconnect channel ()))
+  ;; this makes the second stage /channel/test continue after
+  ;; receiving 11111 instead of waiting the whole 2 seconds
+  ;; this feature is the default from at least GClosure rev 1698
+  ;; cljs currently includes rev 790
+  (set! goog.net.BrowserTestChannel.ALLOW_EARLY_NON_BUFFERED_DETECTION true)
   (doto channel
     (.setChannelDebug (goog.net.ChannelDebug.))
     (.setHandler (handler))
