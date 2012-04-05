@@ -72,10 +72,18 @@ Open two windows at [http://localhost:8080/index.html](http://localhost:8080/ind
 or [http://localhost:8080/index-dev.html](http://localhost:8080/index-dev.html) and start chatting!
 
 ## Run on Heroku
-Use this [buildpack][6], which runs the two lein run tasks to compile
-the ClojureScript during deployment.
+Use the Heroku Clojure [buildpack][7]. This project additionally
+requires two build tasks to compile the ClojureScript during deployment.
 
-[6]: https://github.com/thegeez/heroku-buildpack-clojure
+Enable [user_env_compile][6]:
+    heroku labs:enable user_env_compile -a <YOUR_APP_NAME>
+
+Add this config var:
+    heroku config:add LEIN_BUILD_TASK="run -m tasks.build-dev-js, run
+    -m tasks.build-advanced-js"
+
+[6]: https://devcenter.heroku.com/articles/labs-user-env-compile
+[7]: https://github.com/heroku/heroku-buildpack-clojure.git
 
 ### Note on disconnections on Heroku
 I have found that Heroku does not immediately report when a connection to a client
