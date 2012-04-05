@@ -85,8 +85,7 @@ Enable [user_env_compile][6]:
 
 Add this config var:  
 
-    heroku config:add LEIN_BUILD_TASK="run -m tasks.build-dev-js, run
-    -m tasks.build-advanced-js"
+    heroku config:add LEIN_BUILD_TASK="run -m tasks.build-dev-js, run -m tasks.build-advanced-js"
 
 [6]: https://devcenter.heroku.com/articles/labs-user-env-compile
 [7]: https://github.com/heroku/heroku-buildpack-clojure.git
