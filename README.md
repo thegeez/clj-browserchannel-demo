@@ -72,7 +72,11 @@ Open two windows at [http://localhost:8080/index.html](http://localhost:8080/ind
 or [http://localhost:8080/index-dev.html](http://localhost:8080/index-dev.html) and start chatting!
 
 ## Run on Heroku
-Use the Heroku Clojure [buildpack][7]. This project additionally
+Use the Heroku Clojure [buildpack][7]. 
+
+    heroku config:add BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-clojure.git
+
+This project additionally
 requires two build tasks to compile the ClojureScript during deployment.
 
 Enable [user_env_compile][6]: 
