@@ -75,10 +75,12 @@ or [http://localhost:8080/index-dev.html](http://localhost:8080/index-dev.html) 
 Use the Heroku Clojure [buildpack][7]. This project additionally
 requires two build tasks to compile the ClojureScript during deployment.
 
-Enable [user_env_compile][6]:  
+Enable [user_env_compile][6]: 
+
     heroku labs:enable user_env_compile -a <YOUR_APP_NAME>
 
 Add this config var:  
+
     heroku config:add LEIN_BUILD_TASK="run -m tasks.build-dev-js, run
     -m tasks.build-advanced-js"
 
