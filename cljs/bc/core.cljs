@@ -19,7 +19,7 @@
     (set! (.-channelHandleArray h)
           (fn [x data]
             (let [msg (aget data "msg")]
-              (dom/append (dom/get-element "room") (dom/element :div (str "MSG:" msg))))))
+              (dom/append (dom/get-element "room") (dom/element :div (str "MSG::" msg))))))
     h))
 
 (defn say [text]
