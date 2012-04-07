@@ -2,7 +2,7 @@
   "Adapter for the Jetty webserver, with async HTTP."
   (:import (org.eclipse.jetty.server.handler AbstractHandler)
            (org.eclipse.jetty.server Server Request Response)
-           (org.eclipse.jetty.server.bio SocketConnector)
+           (org.eclipse.jetty.server.nio SelectChannelConnector)
            (org.eclipse.jetty.continuation Continuation ContinuationSupport ContinuationListener)
            (org.eclipse.jetty.io EofException)
            (javax.servlet.http HttpServletRequest))
@@ -64,7 +64,7 @@
 (defn- create-server
   "Construct a Jetty Server instance."
   [options]
-  (let [connector (doto (SocketConnector.)
+  (let [connector (doto (SelectChannelConnector.)
                     (.setPort (options :port 80))
                     (.setHost (options :host)))
         server    (doto (Server.)
