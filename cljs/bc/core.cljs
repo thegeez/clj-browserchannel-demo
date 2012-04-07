@@ -41,7 +41,9 @@
 (def channel (goog.net.BrowserChannel.))
 
 (defn ^:export run []
-  (events/listen js/window "unload" #(.disconnect channel ()))
+  (events/listen js/window "unload" #(do
+                                       (.disconnect channel ())
+                                       (events/removeAll)))
   (doto channel
     (.setHandler (handler))
     (.connect "/channel/test" "/channel/bind")
