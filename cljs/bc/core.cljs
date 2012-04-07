@@ -42,7 +42,7 @@
 
 (defn ^:export run []
   (events/listen js/window "unload" #(do
-                                       (.disconnect channel ())
+                                       ;;(.disconnect channel ())
                                        (events/removeAll)))
   (doto channel
     (.setHandler (handler))
