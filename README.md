@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This project has been split into components: https://github.com/thegeez/clj-browserchannel
+
 # clj-browserchannel-demo
 
 Cross-browser compatible, real-time, bi-directional
